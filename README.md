@@ -7,7 +7,9 @@ It work surprisingly well, but that hand-over still represents a bit of overhead
 
 This is a project to compile the SQLite "augmentation" C code into C#. It won't be particularly readable C# code, but it'll compile and run. As C# code, the dot-net JIT compiler can make run-time optimizations and there's no need for an interop hand-over between worlds.
 
-I am grateful to Hacker News user "kevingadd" [for inspring me](https://news.ycombinator.com/item?id=33513842) to have the original idea.
+This project is in the planning phase. Except it's actually in the "Do I want to continue with this" phase. If yu would find this project useful, please tell me. 
+
+I am grateful to Hacker News user "kevingadd" [for inspring the original idea](https://news.ycombinator.com/item?id=33513842).
 
 # But Why?
 
@@ -44,9 +46,11 @@ Preprocess. Tokenize. Structure.
 
 At the end of this will be the C source converted into a struture. There'll be an object where if you open it and drill down deep into the contents, you'll find an `if` object with `Condition`, `Then` and `Else` properties. This will need to have awareness of state here, as `name '*' name` might be a multiplication or it might be a declaration of a pointer type.
 
+We don't have to complete this phase before moving ahead. We coud start with a simple C file that just has a "calculate two plus two" function. We could go ahead and start subsequent phases of this plan for the limited subset of C before going back and parsing more and more of the C language. That "two plus two" function would continue to make a reasonable unit test because we wouldn't expect the structure to change. (Until it does.)
+
 ## 2. Generate C# code.
 
-With that gigantic structure, churn out C# code. For this phase, we're only aiming for simple working code - not neccessarily efficient code. It'll be some time before we run a unit test so I'd rather we had the simplest code, leaving making good code for a later phase.
+With the gigantic structure produced by the previous phase, churn out C# code. For this phase, we're only aiming for simple working code - not neccessarily efficient code. It'll be some time before we run a unit test for the actual SQLite code, so I'd rather we had the simplest code, leaving making good code for a later phase. (Unit testing a two-plus-two for the first run through the plan is another matter.)
 
 As an example, here's how the function `sessionSkipRecord` would be converted, with the original C code in comments.
 
@@ -65,7 +69,7 @@ void Conv_sessionSkipRecord(MutableValue_PointerTo_PointerTo_u8 ppRec_Param, Mut
     
     /* for(i=0; i<nCol; i++){ */
     var value_0 = FromLiteral_int(0);
-    for (Set(i, 0); LessThan(i, nCol), Increment(i))
+    for (Set(i, 0); LessThan(i, nCol); Increment(i))
     {
     
         /* int eType = *aRec++; */
